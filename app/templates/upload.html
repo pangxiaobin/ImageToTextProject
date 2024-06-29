@@ -1,0 +1,171 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图生文</title>
+  <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}" media="all">
+  <style>
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .title-section {
+        text-align: center;
+        padding: 20px;
+      }
+      .title-section h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .title-section p {
+        margin: 10px 0 0;
+        font-size: 16px;
+        color: #666;
+      }
+    .left, .right {
+      padding: 20px;
+    }
+    .left {
+      flex: 1 1 100%;
+    }
+    .right {
+      flex: 2 1 100%;
+      border-top: 1px solid #e6e6e6;
+      padding: 20px
+    }
+    .right .content {
+      border: 1px solid #e6e6e6;
+      padding: 20px;
+      height: 100%;
+      overflow-y: auto;
+    }
+    @media(min-width: 768px) {
+      .left {
+        flex: 1;
+      }
+      .right {
+        flex: 2;
+        border-top: none;
+      }
+    }
+  </style>
+</head>
+<body>
+    <div class="title-section">
+        <h1>图生文</h1>
+        <p>使用开源大模型，根据上传的图片，使用Hugging Face的image-to-text模型生成文本，再使用LLM模型生成一篇故事，或者配一段古诗。</p>
+      </div>
+  <div class="container">
+    
+    <div class="left">
+      <form class="layui-form" action="", method="post" id="uploadForm" enctype="multipart/form-data">
+        <div class="layui-form-item">
+          <label class="layui-form-label" >图片</label>
+          <div class="layui-input-block">
+            <input type="file" name="image" class="layui-input" lay-verify="required|image">
+          </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" >image-to-text-model</label>
+            <div class="layui-input-block">
+              <select name="img_to_text_model" lay-verify="required">
+                {% for key in MODEL_PREDICT_DICT %}
+                <option value="{{key}}" selected>{{key}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">LLM模型</label>
+          <div class="layui-input-block">
+            <select name="llm_type" lay-verify="required">
+              <option value=""></option>
+              {% for key in LLM_MODEL_MAP %}
+              <option value="{{key}}">{{key}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">prompt</label>
+          <div class="layui-input-block">
+            <select name="prompt_type" lay-verify="required">
+              <option value=""></option>
+              {% for key in PROMPT_TYPE_MAP %}
+              <option value="{{key}}">{{key}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="submit">生成</button>
+          </div>
+        </div>
+      </form>
+      <img src="" width="300" height="300" style="display:none" alt="" id="show-image">
+
+    </div>
+    <div class="right">
+      <h2>生成结果:</h2>
+      <!-- 展示图片 -->
+      <div class="content">
+        <!-- 文本内容展示区域 -->
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'layui/layui.js' %}"></script>
+  <script>
+    layui.use('form', function(){
+      var form = layui.form;
+      var layer = layui.layer;
+      var $ = layui.jquery;
+      form.verify({
+        image: function(value, elem) {
+          // 验证上传的内容为图片类型
+          if(elem.name == 'image' && !/\.(jpg|jpeg|png|gif)$/i.test(value)) {
+            return '请上传图片类型的文件';
+        }
+      }});
+      // 监听提交
+      form.on('submit(submit)', function(data){
+        
+        var loadIndex = layer.load(3);
+        // 清空content区域
+        $('.content').html('');
+        // 清空图片
+        $('#show-image').attr('src', '');
+        // 隐藏图片
+        $('#show-image').hide();
+
+        var formData = new FormData($('#uploadForm')[0]);
+
+        $.ajax({
+          url: '/upload/',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(res){
+          
+            $('#show-image').attr('src', res.image_src);
+            $('#show-image').show();
+            $('.content').html(res.text);
+            layer.close(loadIndex);
+            
+          },
+          error: function(err){
+            layer.close(loadIndex);
+            layer.msg('请求失败，请稍后再试！', {icon: 2, time: 2000});
+
+          }
+        });
+        return false; // 阻止表单跳转。如果需要表单跳转，去掉这段即可。
+      });
+    });
+  </script>
+</body>
+</html>

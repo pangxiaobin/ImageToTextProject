@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Gallery</title>
+    <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
+    <style>
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        .image-item {
+            width: calc(20% - 10px); /* 5 columns */
+            margin-bottom: 10px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .image-item img {
+            width: 100%;
+            border: 1px solid;
+            height: 100%;            d
+            isplay: block;
+        }
+         /* Responsive layout */
+         @media (max-width: 1200px) {
+            .image-item {
+                width: calc(25% - 10px); /* 4 columns */
+            }
+        }
+        @media (max-width: 992px) {
+            .image-item {
+                width: calc(33.33% - 10px); /* 3 columns */
+            }
+        }
+        @media (max-width: 768px) {
+            .image-item {
+                width: calc(50% - 10px); /* 2 columns */
+            }
+        }
+        @media (max-width: 576px) {
+            .image-item {
+                width: calc(100% - 10px); /* 1 column */
+            }
+        }
+        .active {
+            background-color: green !important;
+            color: white !important;
+            border-radius: 5px;
+            padding: 0 10px;
+        }
+        .layui-laypage {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title-section {
+            text-align: center;
+            padding: 20px;
+          }
+          .title-section h1 {
+            margin: 0;
+            font-size: 24px;
+          }
+          .title-section p {
+            margin: 10px 0 0;
+            font-size: 16px;
+            color: #666;
+          }
+    </style>
+</head>
+<body>
+    <div class="title-section">
+        <h1>历史生成记录，点击可查看详情</h1>
+        <p><button type="button" onclick="window.open('/upload/', '_blank');" class="layui-btn layui-btn-radius">图文生成</button></p>
+        
+
+      </div>
+    <div class="layui-container">
+        <div class="layui-row">
+            <div class="layui-col-md12">
+                <div class="image-container">
+                    {% for image in page_obj %}
+                        <div class="image-item" data-text="{{ image.text }}">
+                            <img src="{{ image.image.url }}" alt="{{ image.text }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="layui-box layui-laypage layui-laypage-default">
+                    <div class="layui-laypage">
+                        {% if page_obj.has_previous %}
+                            <a class="layui-laypage-prev" href="?page={{ page_obj.previous_page_number }}">上一页</a>
+                        {% endif %}
+                        {% for num in page_range %}
+                            {% if num == page_obj.number %}
+                                <span class="layui-laypage-page active">{{ num }}</span>
+                            {% else %}
+                                <a class="layui-laypage-page" href="?page={{ num }}">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <a class="layui-laypage-next" href="?page={{ page_obj.next_page_number }}">下一页</a>
+                        {% endif %}
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'layui/layui.js' %}"></script>
+    <script>
+        layui.use(['layer'], function(){
+            var layer = layui.layer;
+
+            // 为每个图像项添加点击事件
+            var imageItems = document.querySelectorAll('.image-item');
+            imageItems.forEach(function(item) {
+                item.addEventListener('click', function() {
+                    var text = this.getAttribute('data-text');
+                    layer.open({
+                        content: text,
+                        area: ['500px', '500px'],
+                        title: '详情'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

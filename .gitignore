@@ -1,0 +1,19 @@
+# python项目忽略文件
+
+.idea/
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyproj
+
+.env
+.venv
+
+db.sqlite3
+
+media/
+
+# 忽略predict_model/models下的文件
+predict_model/models/*
