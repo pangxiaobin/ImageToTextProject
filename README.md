@@ -28,6 +28,8 @@ $env:HF_ENDPOINT="https://hf-mirror.com"
 # 下载模型
 # 地址https://hf-mirror.com/Salesforce/blip-image-captioning-large/tree/main
 
+cd predict_model
+
 huggingface-cli download --resume-download  --local-dir-use-symlinks False Salesforce/blip-image-captioning-large --local-dir models/blip-image-captioning-large
 
 ```
