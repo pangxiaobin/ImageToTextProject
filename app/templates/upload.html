@@ -123,7 +123,13 @@
     </div>
     <div class="right">
       <h2>生成结果:</h2>
-      <!-- 展示图片 -->
+      <!-- 展示图片内容 -->
+      <div class="layui-panel">
+        <div style="padding: 32px;">
+          <span> Image Text:</span>
+          <span id="image-text"></span>
+        </div>
+      </div>
       <div class="content">
         <!-- 文本内容展示区域 -->
       </div>
@@ -170,6 +176,8 @@
         $('#show-image').attr('src', '');
         // 隐藏图片
         $('#show-image').hide();
+        // 清空image-text
+        $('#image-text').html('');
 
         var formData = new FormData($('#uploadForm')[0]);
 
@@ -184,6 +192,7 @@
             $('#show-image').attr('src', res.image_src);
             $('#show-image').show();
             $('.content').html(res.text);
+            $('#image-text').html(res.image_text);
             layer.close(loadIndex);
             
           },

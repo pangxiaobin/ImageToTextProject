@@ -12,16 +12,42 @@
             justify-content: flex-start;
         }
         .image-item {
-            width: calc(20% - 10px); /* 5 columns */
+            position: relative;
+            width: calc(20% - 10px); /* 5 columns by default */
             margin-bottom: 10px;
             cursor: pointer;
-            margin-left: 10px;
+            overflow: hidden;
+            margin-right: 10px;
+            margin-top: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            
         }
         .image-item img {
             width: 100%;
-            border: 1px solid;
-            height: 100%;            d
-            isplay: block;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        .image-item:hover img {
+            transform: scale(1.1); /* Slightly zoom in on hover */
+        }
+        .info-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+            background: linear-gradient(to top, rgba(255, 0, 150, 0.9), rgba(0, 204, 255, 0.7)); /* Pink to blue gradient */
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .image-item:hover .info-overlay {
+            opacity: 1;
         }
          /* Responsive layout */
          @media (max-width: 1200px) {
@@ -85,6 +111,11 @@
                     {% for image in page_obj %}
                         <div class="image-item" data-text="{{ image.text }}">
                             <img src="{{ image.image.url }}" alt="{{ image.text }}">
+                            <div class="info-overlay">
+                                <p><strong>模型类型:</strong> {{ image.llm_model }}</p>
+                                <p><strong>模型名字:</strong> {{ image.model_name }}</p>
+                                <p><strong>创建时间:</strong> {{ image.created_at }}</p>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>

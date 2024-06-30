@@ -72,9 +72,17 @@ def upload_view(request):
             return JsonResponse({"error": str(e)}, status=500)
         new_image = copy.deepcopy(image)
         # 保存预测历史
-        img = ImageToTextHistory.objects.create(image=new_image, text=text)
+        img = ImageToTextHistory.objects.create(
+            image=new_image,
+            text=text,
+            image_text=input_sentence,
+            llm_model=llm_type,
+            model_name=model_name,
+        )
         image_src = img.image.url
-        return JsonResponse({"image_src": image_src, "text": text})
+        return JsonResponse(
+            {"image_src": image_src, "text": text, "image_text": input_sentence}
+        )
     else:
         content = {
             "MODEL_PREDICT_DICT": MODEL_PREDICT_DICT,
