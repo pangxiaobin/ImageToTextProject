@@ -25,10 +25,10 @@ class LanguageModel(ABC):
 
 
 class ChatGPTModel(LanguageModel):
-    def __init__(self) -> None:
+    def __init__(self, model_name: str = "gpt-3.5-turbo") -> None:
         super().__init__()
         self.llm = ChatOpenAI(
-            model="gpt-3.5-turbo",
+            model=model_name,
             temperature=0,
             max_tokens=None,
             timeout=None,
@@ -55,14 +55,25 @@ class iFlytekModel(LanguageModel):
 
     """
 
+    def get_api_url(self, domain: str) -> str:
+        domin_dict = {
+            "4.0Ultra": "wss://spark-api.xf-yun.com/v4.0/chat",
+            "generalv3.5": "wss://spark-api.xf-yun.com/v3.5/chat",
+            "generalv3": "wss://spark-api.xf-yun.com/v3.1/chat",
+            "generalv2": "wss://spark-api.xf-yun.com/v2.1/chat",
+            "general": "wss://spark-api.xf-yun.com/v1.1/chat",
+        }
+        return domin_dict.get(domain, "wss://spark-api.xf-yun.com/v1/chat")
+
     def __init__(
         self,
-        spark_llm_domain="generalv3",
+        model_name: str = "generalv3",
     ):
+        api_url = self.get_api_url(model_name)
         self.llm = SparkLLM(
-            spark_llm_domain=spark_llm_domain,
+            spark_llm_domain=model_name,
             verbose=True,
-            # spark_api_url="wss://spark-api.xf-yun.com/v4.0/chat",
+            spark_api_url=api_url,
         )
         # 初始化讯飞API
 

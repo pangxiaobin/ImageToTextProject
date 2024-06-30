@@ -17,3 +17,5 @@ media/
 
 # 忽略predict_model/models下的文件
 predict_model/models/*
+
+.DS_Store

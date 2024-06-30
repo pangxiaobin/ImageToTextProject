@@ -62,7 +62,7 @@
     <div class="left">
       <form class="layui-form" action="", method="post" id="uploadForm" enctype="multipart/form-data">
         <div class="layui-form-item">
-          <label class="layui-form-label" >图片</label>
+          <label class="layui-form-label" >Image</label>
           <div class="layui-input-block">
             <input type="file" name="image" class="layui-input" lay-verify="required|image">
           </div>
@@ -77,17 +77,30 @@
               </select>
             </div>
           </div>
+        
+          <div class="layui-form-item">
+            <label class="layui-form-label">LLM</label>
+            <div class="layui-input-block">
+              <select name="llm_type" lay-filter="llm_type" lay-verify="required">
+                <option value=""></option>
+                {% for key in LLM_MODEL_MAP %}
+                <option value="{{key}}">{{key}}</option>
+                {% endfor %}
+              </select>
+            </div>
+      
+          </div>
+        
         <div class="layui-form-item">
-          <label class="layui-form-label">LLM模型</label>
+          <label class="layui-form-label">Model Type</label>
           <div class="layui-input-block">
-            <select name="llm_type" lay-verify="required">
+            <select name="model_name" lay-verify="required">
               <option value=""></option>
-              {% for key in LLM_MODEL_MAP %}
-              <option value="{{key}}">{{key}}</option>
-              {% endfor %}
             </select>
           </div>
         </div>
+          
+
         <div class="layui-form-item">
           <label class="layui-form-label">prompt</label>
           <div class="layui-input-block">
@@ -130,6 +143,23 @@
             return '请上传图片类型的文件';
         }
       }});
+
+      // 模型联动选择
+      var model_name_dict = {{ LLM_MODEL_MAP|safe }};
+      form.on('select(llm_type)', function(data){
+        var model_name = data.value;
+        var model_select = $('select[name="model_name"]');
+        model_select.empty();
+        if(model_name in model_name_dict){
+          var model_list = model_name_dict[model_name]['model_list'];
+          for(var i=0; i<model_list.length; i++){
+            model_select.append('<option value="'+model_list[i]+'">'+model_list[i]+'</option>');
+          }
+        }
+        form.render('select'); // 重新渲染子级选择框
+
+      });
+
       // 监听提交
       form.on('submit(submit)', function(data){
         

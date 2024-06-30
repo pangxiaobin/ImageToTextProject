@@ -21,7 +21,7 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ### 推荐网盘下载地址
 
 - [夸克网盘链接](https://pan.quark.cn/s/849887c2d560)
-- [百度网盘链接](https://pan.baidu.com/s/1Yvl46DBzt6zfDUMVdLP2gQ) <https://pan.baidu.com/s/1Yvl46DBzt6zfDUMVdLP2gQ> 提取码: j2wi
+- [百度网盘链接](https://pan.baidu.com/s/1Yvl46DBzt6zfDUMVdLP2gQ) https://pan.baidu.com/s/1Yvl46DBzt6zfDUMVdLP2gQ 提取码: j2wi
 
 > 把下载的models解压到predict_model 下面
 

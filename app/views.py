@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 from app.models import ImageToTextHistory
 from llm_model import PROMPT_TYPE_MAP, LLM_MODEL_MAP
+import llm_model
 from predict_model import MODEL_PREDICT_DICT
 from PIL import Image
 import io
@@ -46,22 +47,23 @@ def index(request):
 def upload_view(request):
     if request.method == "POST":
         image = request.FILES.get("image")
-        print(image)
         img_to_text_model = request.POST.get("img_to_text_model")
         llm_type = request.POST.get("llm_type")
+        model_name = request.POST.get("model_name")
         prompt_type = request.POST.get("prompt_type")
         try:
             # 这里需要把图片分两步处理，需要先用LLM模型生成prompt，然后用img_to_text_model模型生成text
             # 图生文需要传入Image.Image对象
             prompt_func = PROMPT_TYPE_MAP.get(prompt_type)
-            llm_model_instance = LLM_MODEL_MAP.get(llm_type)
+            ll_model_obj = LLM_MODEL_MAP.get(llm_type)
+            llm_model_instance = getattr(llm_model, ll_model_obj.get("LLMCLass"))
             predict_model_instance = MODEL_PREDICT_DICT.get(img_to_text_model)
             image_image = Image.open(io.BytesIO(image.read()))
 
             input_sentence = predict_model_instance().predict(image_image)
 
             prompt = prompt_func(input_sentence)
-            text = llm_model_instance().generate(prompt)
+            text = llm_model_instance(model_name=model_name).generate(prompt)
         except Exception as e:
             import traceback
 
