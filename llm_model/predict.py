@@ -86,28 +86,10 @@ class iFlytekModel(LanguageModel):
 
 def get_story_prompt(
     input_sentence,
-    tone="adventurous",
-    target_audience="general audience",
     length="200 words",
 ):
-    prompt = f"""
-    Please generate a complete and engaging story in Chinese based on 
-    the following input sentence. The story should have a clear beginning, 
-    middle, and end. Ensure the plot is coherent, creative, and captivating.
-    Incorporate vivid descriptions, character development, and an intriguing conflict 
-    or challenge that leads to a satisfying resolution. 
-    The story should take place around noon and reflect the
-    atmosphere and events typical of that time of day. 
-    he tone of the story should be {tone}, and it should b
-    e appropriate for {target_audience}. The story shoul
-    d be approximately {length} long.
-
-    Input Sentence: {input_sentence}
-
-    Please generate the story in Chinese.
-    """
-    # Assuming you've set up LangChain call, here's an example call
-
+    prompt = f"""your are a novel writer, please write a small story (about {length}) in Chinsese according to the user input.
+    user input: {input_sentence}"""
     return prompt
 
 
@@ -120,7 +102,7 @@ def get_poetry_prompt(input_sentence):
     Input sentence: {input_sentence}
     Response format:
         <poem>
-        <title>Title of the Poem</title><br>
+        <h3>Title of the Poem</h3><br>
         <author>Author Name</author><br>
         <era>Dynasty/Era</era><br>
         <content>
@@ -139,8 +121,8 @@ if __name__ == "__main__":
     # 测试讯飞模型
     iflytek_model = iFlytekModel()
     prompt = get_story_prompt("I love playing video games.")
-    # story = iflytek_model.generate(prompt)
-    # print(story)
+    story = iflytek_model.generate()
+    print(story)
     poetry_prompt = get_poetry_prompt("夕阳西下")
     poetry = iflytek_model.generate(poetry_prompt)
     print(poetry)
