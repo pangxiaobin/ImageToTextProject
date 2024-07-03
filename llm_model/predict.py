@@ -95,23 +95,10 @@ def get_story_prompt(
 
 def get_poetry_prompt(input_sentence):
     prompt = f"""
-    Please find a historical classical Chinese poem that fits the following input sentence.
-    The poem should be relevant to the given scenario. Answer in Chinese, and ensure the response is
-   formatted for easy display in HTML, including the title, author, and era if available.
-
-    Input sentence: {input_sentence}
-    Response format:
-        <poem>
-        <h3>Title of the Poem</h3><br>
-        <author>Author Name</author><br>
-        <era>Dynasty/Era</era><br>
-        <content>
-            Line 1 of the poem<br>
-            Line 2 of the poem<br>
-            Line 3 of the poem<br>
-            Line 4 of the poem
-        </content>
-        </poem>
+    Please translate the following English description into Chinese,and enhance it with imagery and expressions commonly found in classical 
+    Chinese poetry to make it more poetic:
+    Description: arafed beetle parked on the side of the road in front of a building
+    Poetic Chinese description:
     """
 
     return prompt

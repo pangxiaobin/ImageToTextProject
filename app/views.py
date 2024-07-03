@@ -6,6 +6,7 @@ from app.models import ImageToTextHistory
 from llm_model import PROMPT_TYPE_MAP, LLM_MODEL_MAP
 import llm_model
 from predict_model import MODEL_PREDICT_DICT
+from vector_search import PeomSearcherInstance
 from PIL import Image
 import io
 import copy
@@ -64,6 +65,11 @@ def upload_view(request):
 
             prompt = prompt_func(input_sentence)
             text = llm_model_instance(model_name=model_name).generate(prompt)
+            if prompt_type == "poetry":
+                print(f"generate poem: {text}")
+                payload = PeomSearcherInstance.search(text)[0]
+                # 使用html 来美观的渲染古诗词,
+                text = f"<h2>{payload['title']}</h2><br/><p>{payload['author']}</p><br/><p>{payload['dynasty']}</p><br/><p>{payload['content'].replace('\n', '<br/>')}</p>"
         except Exception as e:
             import traceback
 
